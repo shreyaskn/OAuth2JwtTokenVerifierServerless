@@ -1,0 +1,47 @@
+provider:
+  environment:
+    IAM_KEYS_TABLE: IAM-JWK
+    KEY_FETCH_INTERVAL: 30
+    DISCOVERY_URL: https://identity.mcafee.com/core/.well-known/openid-configuration
+  iamRoleStatements:
+    -
+      Action:
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+      Effect: Allow
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.IAM_KEYS_TABLE}"
+  name: aws
+  runtime: nodejs6.10
+  description: Creates the serverless infrastructure for OAuth2 JWT Token verification 
+resources:
+  Resources:
+    IAMJWKKeysTable:
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: kid
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: kid
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: "${self:provider.environment.IAM_KEYS_TABLE}"
+      Type: "AWS::DynamoDB::Table"
+service: OAuth2JwtTokenVerifierServerless 
+package:
+  individually: true
+functions:
+  OAuth2JwtTokenVerifier:
+    description:  This lambda validates the token passed and outputs the JWT body..
+    handler: OAuth2JwtTokenVerifier.handler
+  OAuth2JwtKeySync:
+    description: This lambda executes every ${self:provider.environment.KEY_FETCH_INTERVAL} to collect latest JWT keys for token
+    handler: OAuth2JwtKeySync.handler
+    events:
+      - schedule: rate(30 minutes)

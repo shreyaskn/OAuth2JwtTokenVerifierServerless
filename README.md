@@ -157,3 +157,4 @@ ServerlessDeploymentBucketName: oauth2jwttokenverifierse-serverlessdeploymentbuc
 - Certificate Validation (HTTPS verification) for Synching of keys.
 - Use Elastic Cache along with Dynamo for storing config.
 - Strategy for Rotation of Signing Keys.
+

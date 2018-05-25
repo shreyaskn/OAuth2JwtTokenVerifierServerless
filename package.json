@@ -1,0 +1,16 @@
+{
+  "name": "OAuth2JWTTokenVerifier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shreyas K N",
+  "license": "ISC",
+  "devDependencies": {
+    "async": "^2.6.0",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.2.1"
+  }
+}
